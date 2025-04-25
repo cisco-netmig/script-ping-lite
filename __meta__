@@ -1,0 +1,10 @@
+{
+    "name": "Ping Lite",
+    "version": "1.0.0",
+    "author": "Sanjeev Krishna",
+    "uuid": "84fcf8af-52af-4020-9f92-dcc4ce93deb6",
+    "tags": [
+        "Migration",
+        "Reachability"
+    ]
+}
