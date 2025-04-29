@@ -38,6 +38,8 @@ class ContinuousPingWorker(QtCore.QThread):
             'success': False,
             'thread': ''
         }
+        if hasattr(logger, 'savings'):
+            logger.savings(5)
 
         while not self.ip_props.get('stop', False):
             try:
