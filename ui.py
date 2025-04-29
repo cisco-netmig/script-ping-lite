@@ -1,4 +1,6 @@
 import logging
+logger = logging.getLogger(__name__)
+
 import os
 import re
 import copy
@@ -199,7 +201,7 @@ class Form(QtWidgets.QWidget, Ui_Form):
 
     def setup_add_network_dialog(self):
         """Create and display the Add Network dialog."""
-        logging.debug("Opening Add Network dialog.")
+        logger.debug("Opening Add Network dialog.")
         self.add_dialog = QtWidgets.QDialog(self)
         self.add_dialog.setWindowTitle('Add Host/IP/Subnets')
         self.add_dialog.setWindowFlags(self.add_dialog.windowFlags() ^ QtCore.Qt.WindowType.WindowContextHelpButtonHint)
@@ -220,7 +222,7 @@ class Form(QtWidgets.QWidget, Ui_Form):
 
     def create_entries_event(self):
         """Process user input and add IPs to the table."""
-        logging.debug("Creating entries from Add Network dialog.")
+        logger.debug("Creating entries from Add Network dialog.")
         string_list = list(filter(None, self.form.network_text_edit.toPlainText().splitlines()))
         for string in string_list:
             ip_list = self.get_ip(string)
@@ -263,7 +265,7 @@ class Form(QtWidgets.QWidget, Ui_Form):
         Returns:
             list: List of IP addresses.
         """
-        logging.debug(f"Resolving input to IPs: {string}")
+        logger.debug(f"Resolving input to IPs: {string}")
         if re.search(r'^\d+\.\d+\.\d+\.\d+', string):
             if '/' in string:
                 return [str(ip) for ip in ipaddress.ip_network(string).hosts()]
@@ -271,12 +273,12 @@ class Form(QtWidgets.QWidget, Ui_Form):
         try:
             return [socket.gethostbyname(string)]
         except Exception as e:
-            logging.warning(f"Failed to resolve hostname {string}: {e}")
+            logger.warning(f"Failed to resolve hostname {string}: {e}")
             return []
 
     def start_all_ping_event(self):
         """Start pinging all listed IPs."""
-        logging.info("Starting all ping tasks.")
+        logger.info("Starting all ping tasks.")
         self.stop_button.setDisabled(False)
         self.stop_all_action.setDisabled(False)
 
@@ -292,7 +294,7 @@ class Form(QtWidgets.QWidget, Ui_Form):
 
     def stop_all_ping_event(self):
         """Stop all ongoing ping tasks."""
-        logging.info("Stopping all ping tasks.")
+        logger.info("Stopping all ping tasks.")
         for ip, props in copy.copy(self.ip_data).items():
             if props.get('worker'):
                 self.ip_data[ip]['stop'] = True
@@ -301,7 +303,7 @@ class Form(QtWidgets.QWidget, Ui_Form):
 
     def clear_all_table_event(self):
         """Clear all entries in the ping table."""
-        logging.info("Clearing all table entries.")
+        logger.info("Clearing all table entries.")
         self.stop_all_ping_event()
         self.ip_data = {}
         self.ping_table.setRowCount(0)
@@ -311,7 +313,7 @@ class Form(QtWidgets.QWidget, Ui_Form):
 
     def start_selected(self):
         """Start pinging only the selected IPs."""
-        logging.info("Starting selected ping tasks.")
+        logger.info("Starting selected ping tasks.")
         self.stop_button.setDisabled(False)
         self.stop_all_action.setDisabled(False)
         ip_list = self.get_selected_items()
@@ -328,7 +330,7 @@ class Form(QtWidgets.QWidget, Ui_Form):
 
     def stop_selected(self):
         """Stop only the selected ping tasks."""
-        logging.info("Stopping selected ping tasks.")
+        logger.info("Stopping selected ping tasks.")
         ip_list = self.get_selected_items()
 
         for ip in ip_list:
@@ -344,7 +346,7 @@ class Form(QtWidgets.QWidget, Ui_Form):
         Args:
             data (dict): Contains ping results and status info.
         """
-        logging.debug(f"Updating table with data: {data}")
+        logger.debug(f"Updating table with data: {data}")
         icon = self.green_icon if data['success'] else self.red_icon
         self.ip_data[data['ip']]['status_button'].setIcon(icon)
 

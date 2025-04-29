@@ -1,6 +1,8 @@
+import logging
+logger = logging.getLogger(__name__)
+
 import pythonping
 import socket
-import logging
 import time
 from PyQt5 import QtCore
 
@@ -24,7 +26,7 @@ class ContinuousPingWorker(QtCore.QThread):
         """
         Execute continuous pinging and emit updates periodically.
         """
-        logging.info(f"Started ContinuousPingWorker for {self.ip_props['ip']}")
+        logger.info(f"Started ContinuousPingWorker for {self.ip_props['ip']}")
         data = {
             'row': self.ip_props['row'],
             'ip': self.ip_props['ip'],
@@ -47,10 +49,10 @@ class ContinuousPingWorker(QtCore.QThread):
                 data['success'] = response.success()
                 data['thread'] = 'Running'
                 self.update_signal.emit(data)
-                logging.debug(f"Ping data updated for {data['ip']}: {data}")
+                logger.debug(f"Ping data updated for {data['ip']}: {data}")
                 time.sleep(1)
             except Exception as e:
-                logging.error(f"Error pinging {self.ip_props['ip']}: {e}")
+                logger.error(f"Error pinging {self.ip_props['ip']}: {e}")
                 break
 
-        logging.info(f"Stopped ContinuousPingWorker for {self.ip_props['ip']}")
+        logger.info(f"Stopped ContinuousPingWorker for {self.ip_props['ip']}")
